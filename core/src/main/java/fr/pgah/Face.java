@@ -9,13 +9,15 @@ import com.badlogic.gdx.math.Vector2;
 public class Face {
   public static final int WIDTH = 83;
   public static final int HEIGHT = 95;
-  private BitmapFont scorefont;
+  private static BitmapFont scorefont;
+  private String name;
   private Texture texture;
   private Rectangle bounds;
 
-  public Face(String txtName) {
-    this.texture = new Texture(txtName);
-    this.scorefont = new BitmapFont();
+  public Face(String name) {
+    this.name = name;
+    this.texture = new Texture(name + ".png");
+    Face.scorefont = new BitmapFont();
     scorefont.getData().setScale(3f);
   }
 
@@ -38,5 +40,14 @@ public class Face {
   public void dispose() {
     texture.dispose();
     scorefont.dispose();
+  }
+
+  public boolean estMario() {
+    return name.equals("mario");
+    // if (name.equals("mario")) {
+    // return true;
+    // } else {
+    // return false;
+    // }
   }
 }

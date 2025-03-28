@@ -1,5 +1,6 @@
 package fr.pgah;
 
+import java.util.ArrayList;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -17,10 +18,11 @@ import com.badlogic.gdx.utils.Timer.Task;
 public class WantedGame extends ApplicationAdapter {
 
   private SpriteBatch batch;
-  private Face luigi;
-  private Face mario;
-  private Face wario;
-  private Face yoshi;
+  // private Face luigi;
+  // private Face mario;
+  // private Face wario;
+  // private Face yoshi;
+  private ArrayList<Face> facesList;
   private Texture wantedTxt;
   private Vector2 loseCoord;
   private boolean win;
@@ -39,25 +41,30 @@ public class WantedGame extends ApplicationAdapter {
 
   @Override
   public void create() {
+    facesList = new ArrayList<>();
+    facesList.add(new Face("luigi"));
+    facesList.add(new Face("mario"));
+    facesList.add(new Face("wario"));
+    facesList.add(new Face("yoshi"));
+    // luigi = new Face("luigi.png");
+    // mario = new Face("mario.png");
+    // wario = new Face("wario.png");
+    // yoshi = new Face("yoshi.png");
     batch = new SpriteBatch();
-    luigi = new Face("luigi.png");
-    mario = new Face("mario.png");
-    wario = new Face("wario.png");
-    yoshi = new Face("yoshi.png");
-    wantedTxt = new Texture("mario.png");
+    // wantedTxt = new Texture("mario.png");
     win = false;
     lose = false;
     gameInPlay = true;
     endGame = false;
     timer = new Timer();
-    timeRemaining = 10;
+    timeRemaining = 200;
     timerCoord = new Vector2(750, 980);
     levelCoord = new Vector2(20, 980);
     level = 0;
     font = new BitmapFont();
     font.getData().setScale(3f);
     shapeRenderer = new ShapeRenderer();
-    generateStage();
+    generateLevel();
 
     task = new Task() {
       @Override
@@ -73,12 +80,15 @@ public class WantedGame extends ApplicationAdapter {
     timer.scheduleTask(task, 1, 1);
   }
 
-  private void generateStage() {
+  private void generateLevel() {
     level++;
-    luigi.setBounds(generateRandomBounds());
-    mario.setBounds(generateRandomBounds());
-    wario.setBounds(generateRandomBounds());
-    yoshi.setBounds(generateRandomBounds());
+    for (Face f : facesList) {
+      f.setBounds(generateRandomBounds());
+    }
+    // luigi.setBounds(generateRandomBounds());
+    // mario.setBounds(generateRandomBounds());
+    // wario.setBounds(generateRandomBounds());
+    // yoshi.setBounds(generateRandomBounds());
   }
 
   private Rectangle generateRandomBounds() {
@@ -110,14 +120,18 @@ public class WantedGame extends ApplicationAdapter {
     }
 
     if (click != null) {
-      if (luigi.contains(click) || wario.contains(click) || yoshi.contains(click)) {
-        lose = true;
-        // pour savoir plus tard où afficher "PERDU"
-        loseCoord = new Vector2(click.x, click.y);
-        timeRemaining -= 5;
-        if (timeRemaining <= 0) {
-          timeRemaining = 0;
-          endGame = true;
+      for (Face f : facesList) {
+        if (f.contains(click) && !f.estMario()) {
+          lose = true;
+          // pour savoir plus tard où afficher "PERDU"
+          loseCoord = new Vector2(click.x, click.y);
+          timeRemaining -= 5;
+          if (timeRemaining <= 0) {
+            timeRemaining = 0;
+            endGame = true;
+          }
+        } else {
+
         }
       }
       if (mario.contains(click)) {
@@ -183,7 +197,7 @@ public class WantedGame extends ApplicationAdapter {
   private void resetScreen() {
     win = false;
     lose = false;
-    generateStage();
+    generateLevel();
     gameInPlay = true;
   }
 
